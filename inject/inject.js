@@ -1,5 +1,8 @@
 const changeListenInterval = 300;
 const earthRad = 6378137;
+const lat150km = 2.72441928;
+const lon150km = 2.97;
+
 let cursorTargetElement = document.getElementsByClassName("widget-scene")[0];
 
 let oldUrl = "";
@@ -20,6 +23,8 @@ let mapParam = {
 	maxLon: 0
 }
 
+let radarOverlays = {};
+
 // loading function
 function LoadInject(){
 	console.log("inject loaded");
@@ -33,8 +38,10 @@ function LoadInject(){
 		
 		//CreateOverlay(23.829008, 120.955836, 1, 1, `<div class="overlayImg" style="background-color:blue;"></div>`);
 		//CreateOverlay(25.012713,121.542978, 1, 1, `<div class="overlayImg" style="background-color:blue;"></div>`);
-		CreateOverlay(23.5, 121, 6, 6, `<img class="overlayImg" src="https://www.cwb.gov.tw/Data/radar/CV1_TW_3600_202211070240.png">`);
-		CreateOverlay(25.003870, 121.400658, 2.72441928, 2.97, `<img class="overlayImg" src="https://www.cwb.gov.tw/Data/radar_rain/CV1_RCSL_3600/CV1_RCSL_3600_20221107033922_6e51c04bc95ce4dd3c068749691957a2c390499da89d28c3a2ae4804a9f1045e.png">`);
+		radarOverlays.taiwan = CreateOverlay(23.5, 121, 6, 6, `<img class="overlayImg" src="https://www.cwb.gov.tw/Data/radar/CV1_TW_3600_202211070240.png">`);
+		radarOverlays.shulin = CreateOverlay(25.003870, 121.400658, lat150km, lon150km, `<img class="overlayImg" src="https://www.cwb.gov.tw/Data/radar_rain/CV1_RCSL_3600/CV1_RCSL_3600_20221107033922_6e51c04bc95ce4dd3c068749691957a2c390499da89d28c3a2ae4804a9f1045e.png">`);
+		radarOverlays.linyuan = CreateOverlay(22.53, 120.38, lat150km, lon150km, `<img class="overlayImg" src="https://cwbopendata.s3.ap-northeast-1.amazonaws.com/MSC/O-A0084-003.png">`);
+		radarOverlays.linyuan = CreateOverlay(24.14,120.58, lat150km, lon150km, `<img class="overlayImg" src="https://cwbopendata.s3.ap-northeast-1.amazonaws.com/MSC/O-A0084-002.png">`);
 	
 		setInterval(ChangeListener, changeListenInterval);
 	}, 300);
@@ -148,6 +155,8 @@ function CreateOverlay(maxLat, minLon, latDiff, lonDiff, content, active=true){
 	}
 
 	UpdateSingleOverlay(newOverlay);
+
+	return newOverlay;
 }
 
 function UpdateSingleOverlay(overlay){
