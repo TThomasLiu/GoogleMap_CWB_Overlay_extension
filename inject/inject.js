@@ -67,7 +67,7 @@ function ChangeListener(){
 		strProc[2] = parseFloat(strProc[2].replace('z', ""));
 
 		mpx = 156543.03392 * Math.cos(strProc[0] * Math.PI / 180) / Math.pow(2, strProc[2]);
-		horiDegDiv = 2 * Math.asin(width * mpx / (2 * earthRad)) * 180 / Math.PI;
+		horiDegDiv = 2 * Math.asin(width * mpx / (2 * earthRad)) * 180 / Math.PI / 0.9173128938;
 		vertDegDiv = 2 * Math.asin(height * mpx / (2 * earthRad)) * 180 / Math.PI;
 		//horiDegDiv = width * mpx * 360 / 2 / earthRad / Math.PI;
 		//vertDegDiv = height * mpx * 360/ 2 / earthRad / Math.PI;
@@ -166,8 +166,8 @@ function UpdateSingleOverlay(overlay){
 	console.log(mapParam);
 	overlay.style.width = `${width}px`;
 	overlay.style.height = `${height}px`;
-	overlay.style.top = `${-(lat - mapParam.lat) * mapParam.lat2px + mapParam.height / 2}px`;
-	overlay.style.left = `${(lon - mapParam.lon) * mapParam.lon2px /** 0.9173128938*/ + mapParam.width / 2}px`;
+	overlay.style.top = `${-(lat - mapParam.lat) / latDiff * height + mapParam.height / 2}px`;
+	overlay.style.left = `${(lon - mapParam.lon) / lonDiff * width  + mapParam.width / 2}px`;
 }
 
 // entry point
