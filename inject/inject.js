@@ -33,7 +33,8 @@ function LoadInject(){
 		
 		//CreateOverlay(23.829008, 120.955836, 1, 1, `<div class="overlayImg" style="background-color:blue;"></div>`);
 		//CreateOverlay(25.012713,121.542978, 1, 1, `<div class="overlayImg" style="background-color:blue;"></div>`);
-		CreateOverlay(26.5, 118.0, 6, 6, `<img class="overlayImg" src="https://www.cwb.gov.tw/Data/radar/CV1_TW_3600_202211070240.png">`);
+		CreateOverlay(23.5, 121, 6, 6, `<img class="overlayImg" src="https://www.cwb.gov.tw/Data/radar/CV1_TW_3600_202211070240.png">`);
+		CreateOverlay(25.003870, 121.400658, 2.72441928, 2.97, `<img class="overlayImg" src="https://www.cwb.gov.tw/Data/radar_rain/CV1_RCSL_3600/CV1_RCSL_3600_20221107033922_6e51c04bc95ce4dd3c068749691957a2c390499da89d28c3a2ae4804a9f1045e.png">`);
 	
 		setInterval(ChangeListener, changeListenInterval);
 	}, 300);
@@ -43,7 +44,7 @@ function LoadInject(){
 	overlayLayer.id = "overlayLayer";
 	overlayLayer.classList.add("overlayLayer");
 
-	overlayLayer.style.setProperty("--activeOpacity", "0.3");
+	overlayLayer.style.setProperty("--activeOpacity", "0.5");
 
 }
 
@@ -69,8 +70,6 @@ function ChangeListener(){
 		mpx = 156543.03392 * Math.cos(strProc[0] * Math.PI / 180) / Math.pow(2, strProc[2]);
 		horiDegDiv = 2 * Math.asin(width * mpx / (2 * earthRad)) * 180 / Math.PI / 0.9173128938;
 		vertDegDiv = 2 * Math.asin(height * mpx / (2 * earthRad)) * 180 / Math.PI;
-		//horiDegDiv = width * mpx * 360 / 2 / earthRad / Math.PI;
-		//vertDegDiv = height * mpx * 360/ 2 / earthRad / Math.PI;
 
 
 		mapParam.lat = strProc[0];
@@ -83,8 +82,6 @@ function ChangeListener(){
 		mapParam.height = window.innerHeight;
 		mapParam.lat2px = height / (vertDegDiv);
 		mapParam.lon2px = width / (horiDegDiv);
-
-		console.log(mapParam);
 
 		UpdateOverlay();
 	}
@@ -129,19 +126,18 @@ function UpdateOverlay(){
 	let overlays = overlayLayer.getElementsByClassName("overlay");
 
 	for(let i = 0;i<overlays.length;++i){
-		console.log(overlays[i]);
 		UpdateSingleOverlay(overlays[i]);
 	}
 	
 	console.log("update overlay");
 }
 
-function CreateOverlay(lat, lon, latDiff, lonDiff, content, active=true){
+function CreateOverlay(maxLat, minLon, latDiff, lonDiff, content, active=true){
 	let newOverlay = document.createElement('div');
 	newOverlay.classList.add("overlay");
 	overlayLayer.appendChild(newOverlay);
-	newOverlay.setAttribute("lat", lat );
-	newOverlay.setAttribute("lon", lon );
+	newOverlay.setAttribute("lat", maxLat  + latDiff / 2);
+	newOverlay.setAttribute("lon", minLon - lonDiff / 2);
 	newOverlay.setAttribute("latDiff", latDiff);
 	newOverlay.setAttribute("lonDiff", lonDiff);
 
@@ -155,7 +151,6 @@ function CreateOverlay(lat, lon, latDiff, lonDiff, content, active=true){
 }
 
 function UpdateSingleOverlay(overlay){
-	console.log("update single overlay");
 	let lat = overlay.getAttribute("lat");
 	let lon = overlay.getAttribute("lon");
 	let latDiff = overlay.getAttribute("latDiff");
@@ -163,11 +158,10 @@ function UpdateSingleOverlay(overlay){
 	let width = lonDiff * mapParam.lon2px;
 	let height = latDiff * mapParam.lat2px;
 
-	console.log(mapParam);
 	overlay.style.width = `${width}px`;
 	overlay.style.height = `${height}px`;
 	overlay.style.top = `${-(lat - mapParam.lat) / latDiff * height + mapParam.height / 2}px`;
-	overlay.style.left = `${(lon - mapParam.lon) / lonDiff * width  + mapParam.width / 2}px`;
+	overlay.style.left = `${(lon - mapParam.lon) / lonDiff * width  + mapParam.width / 2 }px`;
 }
 
 // entry point

@@ -1,6 +1,6 @@
 
 #overlayLayer{
-	--activeOpacity: 0.3;
+	--activeOpacity: 0.5;
 }
 
 #overlayLayer.overlayLayer{
@@ -11,7 +11,6 @@
 	opacity: 0;
 	transition-property: opacity;
 	transition-duration: 500ms;
-	background-color: red;
 	z-index: 1;
 }
 
@@ -24,6 +23,7 @@
 .overlayImg{
 	height:100%;
 	width:100%;
+	opacity: 0.5
 }
 
 .overlay{
