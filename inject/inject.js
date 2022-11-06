@@ -24,6 +24,7 @@ let mapParam = {
 }
 
 let radarOverlays = {};
+let settingElement;
 
 // loading function
 function LoadInject(){
@@ -38,10 +39,10 @@ function LoadInject(){
 		
 		//CreateOverlay(23.829008, 120.955836, 1, 1, `<div class="overlayImg" style="background-color:blue;"></div>`);
 		//CreateOverlay(25.012713,121.542978, 1, 1, `<div class="overlayImg" style="background-color:blue;"></div>`);
-		radarOverlays.taiwan = CreateOverlay(23.5, 121, 6, 6, `<img class="overlayImg" src="https://www.cwb.gov.tw/Data/radar/CV1_TW_3600_202211070240.png">`);
-		radarOverlays.shulin = CreateOverlay(25.003870, 121.400658, lat150km, lon150km, `<img class="overlayImg" src="https://www.cwb.gov.tw/Data/radar_rain/CV1_RCSL_3600/CV1_RCSL_3600_20221107033922_6e51c04bc95ce4dd3c068749691957a2c390499da89d28c3a2ae4804a9f1045e.png">`);
-		radarOverlays.linyuan = CreateOverlay(22.53, 120.38, lat150km, lon150km, `<img class="overlayImg" src="https://cwbopendata.s3.ap-northeast-1.amazonaws.com/MSC/O-A0084-003.png">`);
-		radarOverlays.linyuan = CreateOverlay(24.14,120.58, lat150km, lon150km, `<img class="overlayImg" src="https://cwbopendata.s3.ap-northeast-1.amazonaws.com/MSC/O-A0084-002.png">`);
+		radarOverlays.taiwan = CreateOverlay(23.5, 121, 6, 6, `<img class="overlayImg" src="https://cwbopendata.s3.ap-northeast-1.amazonaws.com/MSC/O-A0058-003.png">`, "taiwan");
+		radarOverlays.shulin = CreateOverlay(25.003870, 121.400658, lat150km, lon150km, `<img class="overlayImg" src="https://cwbopendata.s3.ap-northeast-1.amazonaws.com/MSC/O-A0084-001.png">`, "shulin");
+		radarOverlays.nantun = CreateOverlay(24.14,120.58, lat150km, lon150km, `<img class="overlayImg" src="https://cwbopendata.s3.ap-northeast-1.amazonaws.com/MSC/O-A0084-002.png">`, "nantun");
+		radarOverlays.linyuan = CreateOverlay(22.53, 120.38, lat150km, lon150km, `<img class="overlayImg" src="https://cwbopendata.s3.ap-northeast-1.amazonaws.com/MSC/O-A0084-003.png">`, "linyuan");
 	
 		setInterval(ChangeListener, changeListenInterval);
 	}, 300);
@@ -53,6 +54,7 @@ function LoadInject(){
 
 	overlayLayer.style.setProperty("--activeOpacity", "0.5");
 
+	CreateSetting();
 }
 
 // change listener
@@ -139,7 +141,7 @@ function UpdateOverlay(){
 	console.log("update overlay");
 }
 
-function CreateOverlay(maxLat, minLon, latDiff, lonDiff, content, active=true){
+function CreateOverlay(maxLat, minLon, latDiff, lonDiff, content, id, active=true){
 	let newOverlay = document.createElement('div');
 	newOverlay.classList.add("overlay");
 	overlayLayer.appendChild(newOverlay);
@@ -149,6 +151,8 @@ function CreateOverlay(maxLat, minLon, latDiff, lonDiff, content, active=true){
 	newOverlay.setAttribute("lonDiff", lonDiff);
 
 	newOverlay.innerHTML = content;
+
+	newOverlay.id = id;
 
 	if(active){
 		newOverlay.classList.add("active");
@@ -171,6 +175,323 @@ function UpdateSingleOverlay(overlay){
 	overlay.style.height = `${height}px`;
 	overlay.style.top = `${-(lat - mapParam.lat) / latDiff * height + mapParam.height / 2}px`;
 	overlay.style.left = `${(lon - mapParam.lon) / lonDiff * width  + mapParam.width / 2 }px`;
+}
+
+function CreateSetting(){
+	let temp;
+	let block;
+	let line;
+
+	settingElement = document.createElement("div");
+	document.body.appendChild(settingElement);
+	settingElement.classList.add("settingPanel");
+	settingElement.classList.add("window");
+
+	temp = document.createElement('div');
+	settingElement.appendChild(temp);
+	temp.innerText = "<";
+	temp.classList.add("menubutton");
+	temp.id = "menubutton";
+	temp.addEventListener("click", ToggleSettingPanel);
+
+	{
+		block = document.createElement("div");
+		block.classList.add("block");
+		settingElement.appendChild(block);
+	
+		line = document.createElement("div");
+		line.classList.add("title");
+		line.innerText = "Overlay";
+		block.appendChild(line);
+		//toggle overlay
+		line = document.createElement("div");
+		block.appendChild(line);
+		line.classList.add("line");
+		
+		temp = document.createElement("h3")
+		temp.innerText = "Overlay";
+		temp.classList.add("name");
+		line.appendChild(temp);
+		temp = document.createElement("input")
+		temp.classList.add("input");
+		temp.setAttribute("type", "checkbox");
+		temp.setAttribute("checked", "");
+		temp.addEventListener("input", ToggleOverlay);
+		line.appendChild(temp);
+	
+		//overlay opacity
+		line = document.createElement("div");
+		block.appendChild(line);
+		line.classList.add("line");
+		
+		temp = document.createElement("h3")
+		temp.innerText = "Opacity";
+		temp.classList.add("name");
+		line.appendChild(temp);
+		temp = document.createElement("input")
+		temp.classList.add("input");
+		// type="range" min="1" max="100" value="50"
+		temp.setAttribute("type", "range");
+		temp.setAttribute("min", "0");
+		temp.setAttribute("max", "100");
+		temp.setAttribute("value", "50");
+		temp.addEventListener("input", ChangeOverlayOpacity);
+		line.appendChild(temp);
+	}
+
+	{
+		block = document.createElement("div");
+		block.classList.add("block");
+		settingElement.appendChild(block);
+	
+		line = document.createElement("div");
+		line.classList.add("title");
+		line.innerText = "Taiwan Overlay";
+		block.appendChild(line);
+
+		//toggle overlay
+		line = document.createElement("div");
+		block.appendChild(line);
+		line.classList.add("line");
+		
+		temp = document.createElement("h3")
+		temp.innerText = "Overlay";
+		temp.classList.add("name");
+		line.appendChild(temp);
+		temp = document.createElement("input")
+		temp.classList.add("input");
+		temp.setAttribute("type", "checkbox");
+		temp.setAttribute("checked", "");
+		temp.setAttribute("target", "taiwan");
+		temp.addEventListener("input", ToggleSingleOverlay);
+		line.appendChild(temp);
+
+		//toggle background
+		line = document.createElement("div");
+		block.appendChild(line);
+		line.classList.add("line");
+		
+		temp = document.createElement("h3")
+		temp.innerText = "Background";
+		temp.classList.add("name");
+		line.appendChild(temp);
+		temp = document.createElement("input")
+		temp.classList.add("input");
+		temp.setAttribute("type", "checkbox");
+		temp.setAttribute("checked", "");
+		temp.setAttribute("target", "taiwan");
+		temp.addEventListener("input", ToggleTaiwanRadarBackground);
+		line.appendChild(temp);
+	
+		//overlay opacity
+		line = document.createElement("div");
+		block.appendChild(line);
+		line.classList.add("line");
+		
+		temp = document.createElement("h3")
+		temp.innerText = "Opacity";
+		temp.classList.add("name");
+		line.appendChild(temp);
+		temp = document.createElement("input")
+		temp.classList.add("input");
+		// type="range" min="1" max="100" value="50"
+		temp.setAttribute("type", "range");
+		temp.setAttribute("min", "0");
+		temp.setAttribute("max", "100");
+		temp.setAttribute("value", "50");
+		temp.setAttribute("target", "taiwan");
+		temp.addEventListener("input", ChangeSingleOverlayOpacity);
+		line.appendChild(temp);
+	}
+
+	{
+		block = document.createElement("div");
+		block.classList.add("block");
+		settingElement.appendChild(block);
+	
+		line = document.createElement("div");
+		line.classList.add("title");
+		line.innerText = "ShuLin Overlay";
+		block.appendChild(line);
+
+		//toggle overlay
+		line = document.createElement("div");
+		block.appendChild(line);
+		line.classList.add("line");
+		
+		temp = document.createElement("h3")
+		temp.innerText = "Overlay";
+		temp.classList.add("name");
+		line.appendChild(temp);
+		temp = document.createElement("input")
+		temp.classList.add("input");
+		temp.setAttribute("type", "checkbox");
+		temp.setAttribute("checked", "");
+		temp.setAttribute("target", "shulin");
+		temp.addEventListener("input", ToggleSingleOverlay);
+		line.appendChild(temp);
+	
+		//overlay opacity
+		line = document.createElement("div");
+		block.appendChild(line);
+		line.classList.add("line");
+		
+		temp = document.createElement("h3")
+		temp.innerText = "Opacity";
+		temp.classList.add("name");
+		line.appendChild(temp);
+		temp = document.createElement("input")
+		temp.classList.add("input");
+		// type="range" min="1" max="100" value="50"
+		temp.setAttribute("type", "range");
+		temp.setAttribute("min", "0");
+		temp.setAttribute("max", "100");
+		temp.setAttribute("value", "50");
+		temp.setAttribute("target", "shulin");
+		temp.addEventListener("input", ChangeSingleOverlayOpacity);
+		line.appendChild(temp);
+	}
+
+	{
+		block = document.createElement("div");
+		block.classList.add("block");
+		settingElement.appendChild(block);
+	
+		line = document.createElement("div");
+		line.classList.add("title");
+		line.innerText = "NanTun Overlay";
+		block.appendChild(line);
+
+		//toggle overlay
+		line = document.createElement("div");
+		block.appendChild(line);
+		line.classList.add("line");
+		
+		temp = document.createElement("h3")
+		temp.innerText = "Overlay";
+		temp.classList.add("name");
+		line.appendChild(temp);
+		temp = document.createElement("input")
+		temp.classList.add("input");
+		temp.setAttribute("type", "checkbox");
+		temp.setAttribute("checked", "");
+		temp.setAttribute("target", "nantun");
+		temp.addEventListener("input", ToggleSingleOverlay);
+		line.appendChild(temp);
+	
+		//overlay opacity
+		line = document.createElement("div");
+		block.appendChild(line);
+		line.classList.add("line");
+		
+		temp = document.createElement("h3")
+		temp.innerText = "Opacity";
+		temp.classList.add("name");
+		line.appendChild(temp);
+		temp = document.createElement("input")
+		temp.classList.add("input");
+		// type="range" min="1" max="100" value="50"
+		temp.setAttribute("type", "range");
+		temp.setAttribute("min", "0");
+		temp.setAttribute("max", "100");
+		temp.setAttribute("value", "50");
+		temp.setAttribute("target", "nantun");
+		temp.addEventListener("input", ChangeSingleOverlayOpacity);
+		line.appendChild(temp);
+	}
+
+	{
+		block = document.createElement("div");
+		block.classList.add("block");
+		settingElement.appendChild(block);
+	
+		line = document.createElement("div");
+		line.classList.add("title");
+		line.innerText = "LinYuan Overlay";
+		block.appendChild(line);
+
+		//toggle overlay
+		line = document.createElement("div");
+		block.appendChild(line);
+		line.classList.add("line");
+		
+		temp = document.createElement("h3")
+		temp.innerText = "Overlay";
+		temp.classList.add("name");
+		line.appendChild(temp);
+		temp = document.createElement("input")
+		temp.classList.add("input");
+		temp.setAttribute("type", "checkbox");
+		temp.setAttribute("checked", "");
+		temp.setAttribute("target", "linyuan");
+		temp.addEventListener("input", ToggleSingleOverlay);
+		line.appendChild(temp);
+	
+		//overlay opacity
+		line = document.createElement("div");
+		block.appendChild(line);
+		line.classList.add("line");
+		
+		temp = document.createElement("h3")
+		temp.innerText = "Opacity";
+		temp.classList.add("name");
+		line.appendChild(temp);
+		temp = document.createElement("input")
+		temp.classList.add("input");
+		// type="range" min="1" max="100" value="50"
+		temp.setAttribute("type", "range");
+		temp.setAttribute("min", "0");
+		temp.setAttribute("max", "100");
+		temp.setAttribute("value", "50");
+		temp.setAttribute("target", "linyuan");
+		temp.addEventListener("input", ChangeSingleOverlayOpacity);
+		line.appendChild(temp);
+	}
+}
+
+function ToggleOverlay(){
+	if(overlayLayer.classList.contains("active")){
+		overlayLayer.classList.remove("active");
+	}else{
+		overlayLayer.classList.add("active");
+	}
+}
+
+function ToggleSingleOverlay(event){
+	let target = document.getElementById(event.target.getAttribute("target"));
+	if(target.classList.contains("active")){
+		target.classList.remove("active");
+	}else{
+		target.classList.add("active");
+	}
+}
+
+function ToggleTaiwanRadarBackground(event){
+	let target = document.getElementById("taiwan");
+	if(event.target.checked){
+		target.innerHTML = `<img class="overlayImg" src="https://cwbopendata.s3.ap-northeast-1.amazonaws.com/MSC/O-A0058-003.png">`;
+	}else{
+		target.innerHTML = `<img class="overlayImg" src="https://cwbopendata.s3.ap-northeast-1.amazonaws.com/MSC/O-A0058-006.png">`;
+
+	}
+}
+
+function ChangeOverlayOpacity(event){
+	overlayLayer.style.setProperty("--activeOpacity", (parseFloat(event.target.value) / 100).toString());
+}
+
+function ChangeSingleOverlayOpacity(event){
+	document.getElementById(event.target.getAttribute("target")).getElementsByClassName("overlayImg")[0].style.opacity =  (parseFloat(event.target.value) / 100).toString();
+}
+
+function ToggleSettingPanel(){
+	if(settingElement.classList.contains("active")){
+		settingElement.classList.remove("active");
+		document.getElementById("menubutton").innerText = "<";
+	}else{
+		settingElement.classList.add("active");
+		document.getElementById("menubutton").innerText = ">";
+	}
 }
 
 // entry point

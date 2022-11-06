@@ -34,3 +34,83 @@
 .overlay.active{
 	opacity: unset;
 }
+
+.window{
+	border-radius: 5px;
+}
+
+.settingPanel{
+	position:fixed;
+	right:2px;
+	top:80px;
+	background-color: white;
+	width: 50px;
+	height: 50px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	transition-duration: 300ms;
+}
+
+.settingPanel.active{
+	overflow-y: scroll;
+	width: 320px;
+	height: 500px;
+	flex-direction: column;
+	align-items: flex-start;
+	justify-content: flex-start;
+}
+
+.settingPanel .block{
+	display: none;
+}
+
+.settingPanel.active .block{
+	display: flex;
+}
+
+.block{
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	margin:5px;
+	background-color: lightcyan;
+	width:95%;
+	padding: 2px;
+}
+
+.line{
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	height: 40px;
+	width:100%;
+	padding: 5px;
+}
+
+.line .input{
+	flex-grow: 1;
+}
+
+.title{
+	width:100%;
+	text-align: center;
+	font-size: 20px;
+}
+
+.name{
+	width:100px;
+	text-align: center;
+	font-size: 18	px;
+}
+
+.settingPanel .menubutton{
+	margin: 5px;
+	width: 95%;
+	height: 40px;
+	font-size: 30px;
+}
+.settingPanel .menubutton:hover{
+	background-color: lightgray;
+}
