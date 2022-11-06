@@ -10,6 +10,8 @@
 	"content_scripts": [
 		{
 			"matches": ["https://www.google.com.tw/maps/*"],
+			"run_at":"document_start",
+			"css": ["inject/inject.css"],
 			"js": ["inject/inject.js"]
 		}
 	]

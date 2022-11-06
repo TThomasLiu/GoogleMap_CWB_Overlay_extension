@@ -1,0 +1,36 @@
+
+#overlayLayer{
+	--activeOpacity: 0.3;
+}
+
+#overlayLayer.overlayLayer{
+	position: fixed;
+	pointer-events: none;
+	height: 0px;
+	width: 0px;
+	opacity: 0;
+	transition-property: opacity;
+	transition-duration: 500ms;
+	background-color: red;
+	z-index: 1;
+}
+
+#overlayLayer.overlayLayer.active{
+	opacity: var(--activeOpacity);
+	width: 100vw;
+	height: 100vh
+}
+
+.overlayImg{
+	height:100%;
+	width:100%;
+}
+
+.overlay{
+	position: fixed;
+	opacity: 0;
+}
+
+.overlay.active{
+	opacity: unset;
+}
