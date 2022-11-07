@@ -1,4 +1,4 @@
-const changeListenInterval = 300;
+const changeListenInterval = 50;
 const earthRad = 6378137;
 const lat150km = 2.72441928;
 const lon150km = 2.97;
@@ -9,6 +9,7 @@ let oldUrl = "";
 let observer;
 let showOverlayTimer = undefined;
 let isOverlayClose = true;
+let forceClose = true;
 let overlayLayer;
 let mapParam = {
 	width: 0,
@@ -40,9 +41,9 @@ function LoadInject(){
 		//CreateOverlay(23.829008, 120.955836, 1, 1, `<div class="overlayImg" style="background-color:blue;"></div>`);
 		//CreateOverlay(25.012713,121.542978, 1, 1, `<div class="overlayImg" style="background-color:blue;"></div>`);
 		radarOverlays.taiwan = CreateOverlay(23.5, 121, 6, 6, `<img class="overlayImg" src="https://cwbopendata.s3.ap-northeast-1.amazonaws.com/MSC/O-A0058-003.png">`, "taiwan");
-		radarOverlays.shulin = CreateOverlay(25.003870, 121.400658, lat150km, lon150km, `<img class="overlayImg" src="https://cwbopendata.s3.ap-northeast-1.amazonaws.com/MSC/O-A0084-001.png">`, "shulin");
-		radarOverlays.nantun = CreateOverlay(24.14,120.58, lat150km, lon150km, `<img class="overlayImg" src="https://cwbopendata.s3.ap-northeast-1.amazonaws.com/MSC/O-A0084-002.png">`, "nantun");
-		radarOverlays.linyuan = CreateOverlay(22.53, 120.38, lat150km, lon150km, `<img class="overlayImg" src="https://cwbopendata.s3.ap-northeast-1.amazonaws.com/MSC/O-A0084-003.png">`, "linyuan");
+		radarOverlays.shulin = CreateOverlay(25.003870, 121.400658, lat150km, lon150km, `<img class="overlayImg" src="https://cwbopendata.s3.ap-northeast-1.amazonaws.com/MSC/O-A0084-001.png">`, "shulin", false);
+		radarOverlays.nantun = CreateOverlay(24.14,120.58, lat150km, lon150km, `<img class="overlayImg" src="https://cwbopendata.s3.ap-northeast-1.amazonaws.com/MSC/O-A0084-002.png">`, "nantun", false);
+		radarOverlays.linyuan = CreateOverlay(22.53, 120.38, lat150km, lon150km, `<img class="overlayImg" src="https://cwbopendata.s3.ap-northeast-1.amazonaws.com/MSC/O-A0084-003.png">`, "linyuan", false);
 	
 		setInterval(ChangeListener, changeListenInterval);
 	}, 300);
@@ -117,6 +118,7 @@ function HideOverlay(){
 
 function ShowOverlay(){
 	//show overlay
+	if(forceClose)return;
 	isOverlayClose = false;
 	overlayLayer.classList.add("active");
 }
@@ -215,7 +217,7 @@ function CreateSetting(){
 		temp = document.createElement("input")
 		temp.classList.add("input");
 		temp.setAttribute("type", "checkbox");
-		temp.setAttribute("checked", "");
+		//temp.setAttribute("checked", "");
 		temp.addEventListener("input", ToggleOverlay);
 		line.appendChild(temp);
 	
@@ -326,7 +328,6 @@ function CreateSetting(){
 		temp = document.createElement("input")
 		temp.classList.add("input");
 		temp.setAttribute("type", "checkbox");
-		temp.setAttribute("checked", "");
 		temp.setAttribute("target", "shulin");
 		temp.addEventListener("input", ToggleSingleOverlay);
 		line.appendChild(temp);
@@ -374,7 +375,6 @@ function CreateSetting(){
 		temp = document.createElement("input")
 		temp.classList.add("input");
 		temp.setAttribute("type", "checkbox");
-		temp.setAttribute("checked", "");
 		temp.setAttribute("target", "nantun");
 		temp.addEventListener("input", ToggleSingleOverlay);
 		line.appendChild(temp);
@@ -422,7 +422,6 @@ function CreateSetting(){
 		temp = document.createElement("input")
 		temp.classList.add("input");
 		temp.setAttribute("type", "checkbox");
-		temp.setAttribute("checked", "");
 		temp.setAttribute("target", "linyuan");
 		temp.addEventListener("input", ToggleSingleOverlay);
 		line.appendChild(temp);
@@ -451,8 +450,10 @@ function CreateSetting(){
 
 function ToggleOverlay(){
 	if(overlayLayer.classList.contains("active")){
+		forceClose = true;
 		overlayLayer.classList.remove("active");
 	}else{
+		forceClose = false;
 		overlayLayer.classList.add("active");
 	}
 }
