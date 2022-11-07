@@ -1,7 +1,7 @@
 {
 	"manifest_version": 3,
-	"name": "Hello Extensions",
-	"description": "Base Level Extension",
+	"name": "Google map radar overlay",
+	"description": "Provide radar overlay for google map, data source: https://www.cwb.gov.tw",
 	"version": "1.0",
 	"action": {
 		//"default_popup": "setting.html",
