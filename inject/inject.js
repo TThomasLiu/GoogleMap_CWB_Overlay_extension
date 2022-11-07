@@ -26,6 +26,7 @@ let mapParam = {
 
 let radarOverlays = {};
 let settingElement;
+let mouseStartCoord = undefined;
 
 // loading function
 function LoadInject(){
@@ -46,6 +47,8 @@ function LoadInject(){
 		radarOverlays.linyuan = CreateOverlay(22.53, 120.38, lat150km, lon150km, `<img class="overlayImg" src="https://cwbopendata.s3.ap-northeast-1.amazonaws.com/MSC/O-A0084-003.png">`, "linyuan", false);
 	
 		setInterval(ChangeListener, changeListenInterval);
+
+		document.getElementById("scene").addEventListener("wheel", HideOverlayOnZoom);
 	}, 300);
 
 	overlayLayer = document.createElement('div');
@@ -101,14 +104,112 @@ function ChangeListener(){
 function CursorChangeCallback(mutationList, o){
 	for (const mutation of mutationList) {
 		if (mutation.type === 'attributes' && mutation.attributeName === "style") {
-			if(cursorTargetElement.style.cursor === "auto" && isOverlayClose){
-				showOverlayTimer = setTimeout(ShowOverlay, 5000);
+			if(cursorTargetElement.style.cursor === "auto"){
+				//showOverlayTimer = setTimeout(ShowOverlay, 5000);
+				document.getElementById("scene").removeEventListener("mousemove", OncursorMove);
+				if(mouseStartCoord !== undefined){
+					//MoveOverlayMomentum(mouseStartCoord.deltaMouseCoord.x, mouseStartCoord.deltaMouseCoord.y, mouseStartCoord.deltaMouseCoord.t);
+					HideOverlay();
+				}
+				mouseStartCoord = undefined;
+
+
 			}else if(cursorTargetElement.style.cursor === "move"){
-				HideOverlay();
+				if(mouseStartCoord === undefined){
+					mouseStartCoord = null;
+					document.getElementById("scene").addEventListener("mousemove", OncursorMove);
+				}
 			}
 		}
 	}
 };
+
+/*
+function MoveOverlayMomentum(deltaX, deltaY, deltaT){
+	let overlays = overlayLayer.getElementsByClassName("overlay");
+	const delay = 1000;
+	
+	if(Math.abs(deltaX) < 0.5 && Math.abs(deltaY) < 0.5){
+		return;
+	}
+
+	console.log(deltaT, deltaX, deltaY);
+	deltaX = deltaX / deltaT * delay / 3 ;
+	deltaY = deltaY / deltaT * delay / 3 ;
+
+
+
+
+	for(let i = 0;i<overlays.length;++i){
+		let rect = overlays[i].getBoundingClientRect();
+		overlays[i].style.transitionDuration = `${delay}ms`;
+		overlays[i].style.transitionTimingFunction = `ease-out`;
+		overlays[i].style.top = `${rect.y + deltaY}px`;
+		overlays[i].style.left = `${rect.x + deltaX}px`;
+	}
+	
+	setTimeout(() => {
+		let overlays = overlayLayer.getElementsByClassName("overlay");
+		for(let i = 0;i<overlays.length;++i){
+			overlays[i].style.transitionDuration = "";
+			overlays[i].style.transitionTimingFunction = "";
+		}
+	}, delay + 50);
+
+}
+*/
+function OncursorMove(event){
+	let overlays = overlayLayer.getElementsByClassName("overlay");
+	if(!mouseStartCoord){
+		mouseStartCoord = {};
+		mouseStartCoord.x = event.clientX;
+		mouseStartCoord.y = event.clientY;
+		mouseStartCoord.oldCoord = [];
+		mouseStartCoord.lastMouseCoord = {
+			x:event.clientX,
+			y:event.clientY,
+			t:event.timeStamp
+		};
+		mouseStartCoord.deltaMouseCoord = {
+			x:0,
+			y:0,
+			t:0
+		};
+		for(let i = 0;i<overlays.length;++i){
+			let rect = overlays[i].getBoundingClientRect();
+			mouseStartCoord.oldCoord.push({
+					x:rect.x,
+					y:rect.y
+				});
+		}
+		return;
+	}
+
+	for(let i = 0;i<overlays.length;++i){
+		overlays[i].style.top = `${mouseStartCoord.oldCoord[i].y + event.clientY - mouseStartCoord.y}px`;
+		overlays[i].style.left = `${mouseStartCoord.oldCoord[i].x + event.clientX - mouseStartCoord.x}px`;
+	}
+
+	mouseStartCoord.deltaMouseCoord = {
+		x : mouseStartCoord.deltaMouseCoord.x * 0.1 + (event.clientX - mouseStartCoord.lastMouseCoord.x) * 0.9,
+		y : mouseStartCoord.deltaMouseCoord.y * 0.1 + (event.clientY - mouseStartCoord.lastMouseCoord.y)* 0.9,
+		t : mouseStartCoord.deltaMouseCoord.t * 0.1 + (event.timeStamp - mouseStartCoord.lastMouseCoord.t)* 0.9
+	}
+
+	mouseStartCoord.lastMouseCoord = {
+		x:event.clientX,
+		y:event.clientY,
+		t:event.timeStamp
+	};
+}
+
+function HideOverlayOnZoom(){
+	HideOverlay();
+	if(showOverlayTimer){
+		clearTimeout(showOverlayTimer);
+	}
+	showOverlayTimer = setTimeout(ShowOverlay, 5000);
+}
 
 function HideOverlay(){
 	//hide overlay
