@@ -71,7 +71,7 @@ function ChangeListener(){
 		let vertDegDiv;
 		let mpx;
 
-		oldUrl = document.URL + "?";
+		oldUrl = document.URL;
 		
 
 		//extract position information from query
