@@ -124,40 +124,6 @@ function CursorChangeCallback(mutationList, o){
 	}
 };
 
-/*
-function MoveOverlayMomentum(deltaX, deltaY, deltaT){
-	let overlays = overlayLayer.getElementsByClassName("overlay");
-	const delay = 1000;
-	
-	if(Math.abs(deltaX) < 0.5 && Math.abs(deltaY) < 0.5){
-		return;
-	}
-
-	console.log(deltaT, deltaX, deltaY);
-	deltaX = deltaX / deltaT * delay / 3 ;
-	deltaY = deltaY / deltaT * delay / 3 ;
-
-
-
-
-	for(let i = 0;i<overlays.length;++i){
-		let rect = overlays[i].getBoundingClientRect();
-		overlays[i].style.transitionDuration = `${delay}ms`;
-		overlays[i].style.transitionTimingFunction = `ease-out`;
-		overlays[i].style.top = `${rect.y + deltaY}px`;
-		overlays[i].style.left = `${rect.x + deltaX}px`;
-	}
-	
-	setTimeout(() => {
-		let overlays = overlayLayer.getElementsByClassName("overlay");
-		for(let i = 0;i<overlays.length;++i){
-			overlays[i].style.transitionDuration = "";
-			overlays[i].style.transitionTimingFunction = "";
-		}
-	}, delay + 50);
-
-}
-*/
 function OncursorMove(event){
 	let overlays = overlayLayer.getElementsByClassName("overlay");
 	if(!mouseStartCoord){
