@@ -47,10 +47,10 @@ function LoadInject(){
 		
 		//CreateOverlay(23.829008, 120.955836, 1, 1, `<div class="overlayImg" style="background-color:blue;"></div>`);
 		//CreateOverlay(25.012713,121.542978, 1, 1, `<div class="overlayImg" style="background-color:blue;"></div>`);
-		radarOverlays.taiwan = CreateOverlay(23.5, 121, 6, 6, `<img class="overlayImg" src="https://cwbopendata.s3.ap-northeast-1.amazonaws.com/Observation/O-A0058-003.png">`, "taiwan");
-		radarOverlays.shulin = CreateOverlay(25.003870, 121.400658, lat150km, lon150km, `<img class="overlayImg" src="https://cwbopendata.s3.ap-northeast-1.amazonaws.com/Observation/O-A0084-001.png">`, "shulin", false);
-		radarOverlays.nantun = CreateOverlay(24.14,120.58, lat150km, lon150km, `<img class="overlayImg" src="https://cwbopendata.s3.ap-northeast-1.amazonaws.com/Observation/O-A0084-002.png">`, "nantun", false);
-		radarOverlays.linyuan = CreateOverlay(22.53, 120.38, lat150km, lon150km, `<img class="overlayImg" src="https://cwbopendata.s3.ap-northeast-1.amazonaws.com/Observation/O-A0084-003.png">`, "linyuan", false);
+		radarOverlays.taiwan = CreateOverlay(23.5, 121, 6, 6, `<img class="overlayImg" src="https://cwaopendata.s3.ap-northeast-1.amazonaws.com/Observation/O-A0058-003.png">`, "taiwan");
+		radarOverlays.shulin = CreateOverlay(25.003870, 121.400658, lat150km, lon150km, `<img class="overlayImg" src="https://cwaopendata.s3.ap-northeast-1.amazonaws.com/Observation/O-A0084-001.png">`, "shulin", false);
+		radarOverlays.nantun = CreateOverlay(24.14,120.58, lat150km, lon150km, `<img class="overlayImg" src="https://cwaopendata.s3.ap-northeast-1.amazonaws.com/Observation/O-A0084-002.png">`, "nantun", false);
+		radarOverlays.linyuan = CreateOverlay(22.53, 120.38, lat150km, lon150km, `<img class="overlayImg" src="https://cwaopendata.s3.ap-northeast-1.amazonaws.com/Observation/O-A0084-003.png">`, "linyuan", false);
 	
 		setInterval(ChangeListener, changeListenInterval);
 
@@ -560,9 +560,9 @@ function ToggleSingleOverlay(event){
 function ToggleTaiwanRadarBackground(event){
 	let target = document.getElementById("taiwan");
 	if(event.target.checked){
-		target.innerHTML = `<img class="overlayImg" src="https://cwbopendata.s3.ap-northeast-1.amazonaws.com/Observation/O-A0058-003.png">`;
+		target.innerHTML = `<img class="overlayImg" src="https://cwaopendata.s3.ap-northeast-1.amazonaws.com/Observation/O-A0058-003.png">`;
 	}else{
-		target.innerHTML = `<img class="overlayImg" src="https://cwbopendata.s3.ap-northeast-1.amazonaws.com/Observation/O-A0058-006.png">`;
+		target.innerHTML = `<img class="overlayImg" src="https://cwaopendata.s3.ap-northeast-1.amazonaws.com/Observation/O-A0058-006.png">`;
 
 	}
 }
